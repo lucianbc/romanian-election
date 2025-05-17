@@ -7,7 +7,6 @@ import {
   VictoryTheme,
   VictoryZoomContainer,
 } from "victory";
-import { electionData } from "./data";
 import {
   calculateTrendLine,
   calculateTrendPoint,
@@ -15,17 +14,17 @@ import {
   TrendLine,
   Point,
 } from "./regression";
-type ElectionChartData = typeof electionData;
-
-// type ElectionChartData = {
-//   votesX: number[];
-//   candidates: CandidateChartData[];
-// };
-
-// type CandidateChartData = {
-//   votesY: number[];
-//   label: string;
-// };
+import { useEffect, useRef, useState } from "react";
+type ElectionChartData = {
+  totalVotes: number;
+  invalidVotes: number;
+  votesX: number[];
+  candidates: {
+    label: string;
+    votesY: number[];
+    color: string;
+  }[];
+};
 
 const ElectionChart = ({ data }: { data: ElectionChartData }) => {
   const xMax = data.totalVotes - data.invalidVotes;
@@ -122,10 +121,25 @@ const ElectionChart = ({ data }: { data: ElectionChartData }) => {
 };
 
 function App() {
+  const initialized = useRef(false);
+  const [data, setData] = useState<ElectionChartData | null>(null);
+  useEffect(() => {
+    if (!initialized.current) {
+      fetch("/data.json")
+        .then((response) => {
+          initialized.current = true;
+          return response.json();
+        })
+        .then((x) => {
+          console.debug(`my fetched data is`, x);
+          setData(x);
+        });
+    }
+  }, []);
   return (
     <div className="App">
       <h1>Romanian Presidential Election Result</h1>
-      <ElectionChart data={electionData} />
+      {data != null && <ElectionChart data={data} />}
     </div>
   );
 }

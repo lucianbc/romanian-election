@@ -1,0 +1,17 @@
+{
+  "totalVotes": 9000000,
+  "invalidVotes": 0,
+  "votesX": [2000000, 3200000],
+  "candidates": [
+    {
+      "label": "nicusor",
+      "votesY": [30.8, 33.4],
+      "color": "#0000ff"
+    },
+    {
+      "label": "simion",
+      "votesY": [52, 40.4],
+      "color": "#ff00ff"
+    }
+  ]
+}
