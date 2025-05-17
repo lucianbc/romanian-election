@@ -1,4 +1,6 @@
-interface Point {
+import regression from "regression";
+
+export interface Point {
   x: number;
   y: number;
 }
@@ -8,38 +10,45 @@ export interface TrendLine {
   intercept: number;
 }
 
+const regularizeX = (x: number) => x / 1_000_000;
+const deregularizeX = (x: number) => x * 1_000_000;
+
 export function calculateTrendLine(points: Point[]): TrendLine {
-  // Need at least 2 points to define a line
-  if (points.length < 2) {
-    throw new Error("At least 2 points are required to calculate a trend line");
-  }
-
-  let sumX = 0;
-  let sumY = 0;
-  let sumXY = 0;
-  let sumXX = 0;
-  const n = points.length;
-
-  // Calculate the sums needed for the linear regression formula
-  for (const point of points) {
-    sumX += point.x;
-    sumY += point.y;
-    sumXY += point.x * point.y;
-    sumXX += point.x * point.x;
-  }
-
-  console.debug(`Sums are ${sumX}, ${sumY}, ${sumXX}, ${sumXY}`, points);
-
-  // Calculate the slope (m) using the formula: m = (n*∑xy - ∑x*∑y) / (n*∑x² - (∑x)²)
-  const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-
-  // Calculate the y-intercept (b) using the formula: b = (∑y - m*∑x) / n
-  const intercept = (sumY - slope * sumX) / n;
-
-  return { slope, intercept };
+  type LinearPoints = Parameters<typeof regression.linear>[0];
+  const pp: LinearPoints = points.map((p) => [regularizeX(p.x), p.y]);
+  const regressionResult = regression.linear(pp);
+  return {
+    slope: regressionResult.equation[0],
+    intercept: regressionResult.equation[1],
+  };
 }
 
 export function calculateTrendPoint(trendLine: TrendLine, x: number): Point {
-  console.debug("REGRESSION - trend line is", trendLine);
-  return { x: x, y: x * trendLine.slope + trendLine.intercept };
+  return { x: x, y: regularizeX(x) * trendLine.slope + trendLine.intercept };
+}
+
+export function findIntersection(
+  line1: TrendLine,
+  line2: TrendLine
+): Point | null {
+  // Check if lines are parallel (same slope, no intersection)
+  if (Math.abs(line1.slope - line2.slope) < Number.EPSILON) {
+    // Check if they're the same line (same y-intercept too)
+    if (Math.abs(line1.intercept - line2.intercept) < Number.EPSILON) {
+      return null;
+    }
+    // Parallel lines with different y-intercepts never intersect
+    return null;
+  }
+
+  // Calculate intersection point using the formula:
+  // x = (b2 - b1) / (m1 - m2)
+  // where m is slope and b is y-intercept
+  const x = (line2.intercept - line1.intercept) / (line1.slope - line2.slope);
+
+  // Calculate y by substituting x back into either line equation
+  // y = m1 * x + b1
+  const y = line1.slope * x + line1.intercept;
+
+  return { x: deregularizeX(x), y };
 }

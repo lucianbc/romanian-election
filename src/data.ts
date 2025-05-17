@@ -45,16 +45,16 @@ const DATA_POINTS = 200;
 const START_VOTES = 1_500_000;
 
 const votestamps = [...Array(DATA_POINTS).keys()]
-  .slice(0, DATA_POINTS - 100)
   .map(
     (ix) => START_VOTES + ((ix + 1) * (TOTAL_VOTES - START_VOTES)) / DATA_POINTS
-  );
+  )
+  .slice(0, DATA_POINTS - 100);
 
 const nicusorPercentages = generateRandomTrendData({
   length: DATA_POINTS,
   startValue: 20,
   endValue: 60,
-});
+}).slice(0, votestamps.length);
 
 export const electionData = {
   totalVotes: TOTAL_VOTES,

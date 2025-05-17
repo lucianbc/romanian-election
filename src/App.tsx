@@ -3,11 +3,18 @@ import {
   VictoryChart,
   VictoryLegend,
   VictoryLine,
+  VictoryScatter,
   VictoryTheme,
   VictoryZoomContainer,
 } from "victory";
 import { electionData } from "./data";
-import { calculateTrendLine, calculateTrendPoint } from "./regression";
+import {
+  calculateTrendLine,
+  calculateTrendPoint,
+  findIntersection,
+  TrendLine,
+  Point,
+} from "./regression";
 type ElectionChartData = typeof electionData;
 
 // type ElectionChartData = {
@@ -20,32 +27,10 @@ type ElectionChartData = typeof electionData;
 //   label: string;
 // };
 
-const MaybeTrendPrediction = ({
-  points,
-  lastX,
-}: {
-  points: { x: number; y: number }[];
-  lastX: number;
-}) => {
-  return (
-    <VictoryLine
-      data={[
-        { x: 0, y: 80 },
-        { x: lastX, y: 90 },
-      ]}
-    />
-  );
-  // if (points.length < 2) {
-  //   return <></>;
-  // }
-  // const trendLine = calculateTrendLine(points);
-  // const lastPoint = points[points.length - 1];
-  // const predictedPoint = calculateTrendPoint(trendLine, lastX);
-  // return <VictoryLine data={[lastPoint, predictedPoint]} />;
-};
-
 const ElectionChart = ({ data }: { data: ElectionChartData }) => {
   const xMax = data.totalVotes - data.invalidVotes;
+  const trends: TrendLine[] = [];
+  const intersections: Point[] = [];
   return (
     <div
       style={{
@@ -69,43 +54,43 @@ const ElectionChart = ({ data }: { data: ElectionChartData }) => {
           }));
           const lines = [
             <VictoryLine
-              style={{ data: { stroke: candidate.color } }}
+              style={{ data: { stroke: candidate.color, strokeWidth: 1 } }}
               data={points}
             />,
           ];
           if (points.length >= 2) {
             const trendLine = calculateTrendLine(points);
-            const lastPoint = points[points.length - 1];
+            trends.push(trendLine);
+            const trendStartPoint = points[0];
             const predictedPoint = calculateTrendPoint(trendLine, xMax);
-            console.debug(
-              `Predicted for ${candidate.label} point ${predictedPoint}`,
-              predictedPoint
+            lines.push(
+              <VictoryLine
+                style={{
+                  data: {
+                    stroke: candidate.color,
+                    strokeWidth: 1,
+                    strokeDasharray: 4,
+                  },
+                }}
+                data={[trendStartPoint, predictedPoint]}
+              />
             );
-            // lines.push(<VictoryLine data={[lastPoint, predictedPoint]} />);
           }
-          console.debug("returning lines " + lines);
           return lines;
-          // return [
-          //   <VictoryLine
-          //     style={{ data: { stroke: candidate.color } }}
-          //     data={points}
-          //   />,
-          //   <VictoryLine
-          //     style={{ data: { stroke: candidate.color } }}
-          //     data={points.map((p) => ({ x: xMax - p.x, y: p.y }))}
-          //   />,
-          //   // <MaybeTrendPrediction lastX={xMax} points={points} />,
-          // ];
-          // return (
-          //   <>
-          //     <VictoryLine
-          //       style={{ data: { stroke: candidate.color } }}
-          //       data={points}
-          //     />
-          //     <MaybeTrendPrediction lastX={xMax} points={points} />
-          //   </>
-          // );
         })}
+        {(() => {
+          for (let i = 0; i < trends.length; i++) {
+            for (let j = i + 1; j < trends.length; j++) {
+              const intersection = findIntersection(trends[i], trends[j]);
+              if (intersection != null) {
+                intersections.push(intersection);
+              }
+            }
+          }
+          return (
+            <VictoryScatter data={intersections} theme={VictoryTheme.clean} />
+          );
+        })()}
       </VictoryChart>
       <VictoryLegend
         x={125}
@@ -115,14 +100,33 @@ const ElectionChart = ({ data }: { data: ElectionChartData }) => {
         style={{
           border: { stroke: "black" },
         }}
-        data={data.candidates.map((c) => ({
-          name: c.label,
-          symbol: { fill: c.color },
-        }))}
+        data={[
+          ...data.candidates.map((c) => ({
+            name: c.label,
+            symbol: { fill: c.color },
+          })),
+          {
+            name: `X at ${
+              intersections.length > 0
+                ? Intl.NumberFormat("en-UK", {
+                    maximumFractionDigits: 0,
+                  }).format(intersections[0].x)
+                : -1
+            }`,
+            symbol: { fill: "#fff" },
+          },
+        ]}
       />
     </div>
   );
 };
+
+function makeLegend(data: ElectionChartData, intersect: Point[]) {
+  const elems = data.candidates.map((c) => ({
+    name: c.label,
+    symbol: { fill: c.color },
+  }));
+}
 
 function App() {
   return (
