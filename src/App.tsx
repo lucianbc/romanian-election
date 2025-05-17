@@ -121,17 +121,10 @@ const ElectionChart = ({ data }: { data: ElectionChartData }) => {
   );
 };
 
-function makeLegend(data: ElectionChartData, intersect: Point[]) {
-  const elems = data.candidates.map((c) => ({
-    name: c.label,
-    symbol: { fill: c.color },
-  }));
-}
-
 function App() {
   return (
     <div className="App">
-      <h1>Romanian Second Round of Elections Results</h1>
+      <h1>Romanian Presidential Election Result</h1>
       <ElectionChart data={electionData} />
     </div>
   );
