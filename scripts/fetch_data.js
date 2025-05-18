@@ -85,9 +85,7 @@ async function main() {
   const result = await fetchWithPuppeteer(myUrl);
   fs.writeFileSync(`data/results/${now}.json`, JSON.stringify(result));
   const countedResult = calculateTotalVotesByCounty(result);
-  console.debug("Counted is", JSON.stringify(countedResult));
   const currentData = JSON.parse(fs.readFileSync("public/data.json", "utf8"));
-  console.debug("current data is ", currentData);
 
   const nicusor = countedResult["P2-P"];
   const simion = countedResult["P1-P"];

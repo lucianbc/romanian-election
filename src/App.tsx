@@ -16,6 +16,7 @@ import {
   Point,
 } from "./regression";
 import { useEffect, useState } from "react";
+import { relative } from "path";
 type ElectionChartData = {
   totalVotes: number;
   invalidVotes: number;
@@ -27,6 +28,8 @@ type ElectionChartData = {
   }[];
 };
 
+const lastElem = (ns: any) => ns[ns.length - 1];
+
 const ElectionChart = ({ data }: { data: ElectionChartData }) => {
   const xMax = data.totalVotes - data.invalidVotes;
   const trends: TrendLine[] = [];
@@ -35,8 +38,15 @@ const ElectionChart = ({ data }: { data: ElectionChartData }) => {
     <div
       style={{
         width: "70%",
+        position: "relative",
       }}
     >
+      <h2 style={{ position: "absolute" }}>
+        Counted: {lastElem(data.votesX)} Simion:{" "}
+        {data.candidates[1].votesY[data.candidates[1].votesY.length - 1]} %
+        Nicusor:
+        {data.candidates[0].votesY[data.candidates[0].votesY.length - 1]}
+      </h2>
       <VictoryChart
         theme={VictoryTheme.clean}
         domain={{

@@ -3,7 +3,7 @@ while true
 do  
   echo "Running update $(date)"
   # git pull --rebase
-# node scripts/fetch_attendance.js
+  node scripts/fetch_data.js
   git add data
   git add public
   git commit -m "Update attendance"
