@@ -126,7 +126,7 @@ const AttendanceChart = ({
 }: {
   points: { timestamp: string; presence: number }[];
 }) => {
-  const yZoom = new Date(points[points.length - 1].timestamp).getDate();
+  // const yZoom = new Date(points[points.length - 1].timestamp).getDate();
   return (
     <div
       style={{
