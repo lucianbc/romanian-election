@@ -2,6 +2,7 @@ import "./App.css";
 import {
   VictoryAxis,
   VictoryChart,
+  VictoryLabel,
   VictoryLegend,
   VictoryLine,
   VictoryScatter,
@@ -152,9 +153,17 @@ const AttendanceChart = ({
         />
         <VictoryAxis
           tickValues={points.map((x) => new Date(x.timestamp))}
-          tickFormat={(x) => new Date(x).toLocaleTimeString()}
+          tickFormat={(x) =>
+            Intl.DateTimeFormat(undefined, {
+              hour: "2-digit",
+              minute: "2-digit",
+            }).format(x)
+          }
+          tickLabelComponent={
+            <VictoryLabel angle={-45} dx={-25} dy={-5} renderInPortal />
+          }
         />
-        <VictoryAxis dependentAxis />
+        <VictoryAxis dependentAxis tickValues={points.map((x) => x.presence)} />
       </VictoryChart>
     </div>
   );
