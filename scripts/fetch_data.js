@@ -6,7 +6,10 @@ const sleep = (seconds) => {
 };
 
 async function fetchWithPuppeteer(url) {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox"],
+  });
   const page = await browser.newPage();
 
   // const content1 = await page.content();
