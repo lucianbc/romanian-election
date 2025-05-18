@@ -16,7 +16,6 @@ import {
   Point,
 } from "./regression";
 import { useEffect, useState } from "react";
-import { relative } from "path";
 type ElectionChartData = {
   totalVotes: number;
   invalidVotes: number;
