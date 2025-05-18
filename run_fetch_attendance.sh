@@ -2,9 +2,11 @@
 while true  
 do  
   echo "Running update $(date)"
+  # git pull --rebase
   node scripts/fetch_attendance.js
-  git add .
+  git add data
+  git add public
   git commit -m "Update attendance"
   git push
-  sleep 180  
+  sleep 300  
 done
