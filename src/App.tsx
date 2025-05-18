@@ -16,7 +16,7 @@ import {
   TrendLine,
   Point,
 } from "./regression";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 type ElectionChartData = {
   totalVotes: number;
   invalidVotes: number;
