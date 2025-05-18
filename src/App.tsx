@@ -175,11 +175,19 @@ const AttendanceChart = ({
   );
 };
 
+const autoUpdate = (fn: () => void) => {
+  fn();
+  setTimeout(() => {
+    fn();
+  }, 3 * 60 * 1000);
+};
+
 function App() {
-  const initialized = useRef(false);
   const [data, setData] = useState<ElectionChartData | null>(null);
   const [attendance, setAttendance] = useState<object | null>(null);
   useEffect(() => {
+    autoUpdate(() => {
+      console.log(`Updating data at ${new Date()}`);
       fetch("/data.json")
         .then((response) => {
           return response.json();
@@ -194,6 +202,7 @@ function App() {
         .then((x) => {
           setAttendance(x.presence);
         });
+    });
   }, []);
   return (
     <div className="App">
