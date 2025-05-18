@@ -160,7 +160,13 @@ const AttendanceChart = ({
             }).format(x)
           }
           tickLabelComponent={
-            <VictoryLabel angle={-45} dx={-25} dy={-5} renderInPortal />
+            <VictoryLabel
+              angle={-45}
+              dx={-25}
+              dy={-5}
+              renderInPortal
+              style={{ fontSize: 8 }}
+            />
           }
         />
         <VictoryAxis dependentAxis tickValues={points.map((x) => x.presence)} />
