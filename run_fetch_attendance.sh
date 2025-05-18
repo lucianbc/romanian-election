@@ -1,7 +1,7 @@
 #!/bin/bash
 while true  
 do  
-  echo "Running update"
+  echo "Running update $(date)"
   node scripts/fetch_attendance.js
   git add .
   git commit -m "Update attendance"
