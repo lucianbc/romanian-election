@@ -76,9 +76,14 @@ const ElectionChart = ({ data }: { data: ElectionChartData }) => {
             />,
           ];
           if (points.length >= 2) {
-            const trendLine = calculateTrendLine(points);
+            const trendPointsToConsider = points.slice(
+              points.length - 5,
+              points.length
+            );
+            const trendLine = calculateTrendLine(trendPointsToConsider);
             trends.push(trendLine);
-            const trendStartPoint = points[0];
+            // const trendStartPoint = points[0];
+            const trendStartPoint = points[points.length - 1];
             const predictedPoint = calculateTrendPoint(trendLine, xMax);
             lines.push(
               <VictoryLine
