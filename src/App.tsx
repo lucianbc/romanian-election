@@ -121,7 +121,6 @@ const ElectionChart = ({ data }: { data: ElectionChartData }) => {
 };
 
 const AttendanceChart = ({ points }: { points: [number] }) => {
-  console.debug("Got here", points);
   return (
     <div
       style={{
@@ -130,9 +129,11 @@ const AttendanceChart = ({ points }: { points: [number] }) => {
     >
       <VictoryChart
         theme={VictoryTheme.clean}
-        domain={{
-          x: [0, 70],
-        }}
+        domain={
+          {
+            // x: [0, 70],
+          }
+        }
         containerComponent={
           <VictoryZoomContainer allowZoom={true} allowPan={true} />
         }
