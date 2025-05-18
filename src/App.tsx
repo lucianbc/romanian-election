@@ -47,6 +47,14 @@ const ElectionChart = ({ data }: { data: ElectionChartData }) => {
           <VictoryZoomContainer allowZoom={true} allowPan={true} />
         }
       >
+        <VictoryAxis tickFormat={(x: any) => x / 1_000_000} />
+        <VictoryAxis
+          dependentAxis
+          style={{
+            tickLabels: { fontSize: 7, angle: -45 },
+          }}
+          fixLabelOverlap
+        />
         {data.candidates.flatMap((candidate) => {
           const points = candidate.votesY.map((y, ix) => ({
             x: data.votesX[ix],
@@ -126,7 +134,7 @@ const AttendanceChart = ({
 }: {
   points: { timestamp: string; presence: number }[];
 }) => {
-  // const yZoom = new Date(points[points.length - 1].timestamp).getDate();
+  // const lastTimestamp = new Date(points[points.length - 1].timestamp).getDate();
   return (
     <div
       style={{
@@ -137,12 +145,13 @@ const AttendanceChart = ({
         theme={VictoryTheme.clean}
         containerComponent={
           <VictoryZoomContainer
-          // allowZoom={false}
-          // allowPan={true}
-          // zoomDomain={{
-          //   x: [0, 100000],
-          //   y: [0, yZoom],
-          // }}
+            allowZoom={false}
+            allowPan={true}
+            zoomDomain={
+              {
+                // x: [lastTimestamp - 10000, lastTimestamp],
+              }
+            }
           />
         }
       >
@@ -220,8 +229,8 @@ function App() {
   return (
     <div className="App">
       <h1>Romanian Presidential Election Result</h1>
-      {attendance != null && <AttendanceChart points={attendance as any} />}
       {data != null && <ElectionChart data={data} />}
+      {attendance != null && <AttendanceChart points={attendance as any} />}
     </div>
   );
 }

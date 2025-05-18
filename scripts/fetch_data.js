@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const sample = require("./sample_data.json");
+const fs = require("fs");
 
 const sleep = (seconds) => {
   return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
@@ -34,7 +35,7 @@ async function fetchWithPuppeteer(url) {
 }
 
 const myUrl =
-  "https://prezenta.roaep.ro/prezidentiale04052025/data/json/sicpv/pv/pv_aggregated.json";
+  "https://prezenta.roaep.ro/prezidentiale18052025/data/json/sicpv/pv/pv_aggregated.json";
 
 function calculateTotalVotesByCounty(rawResults) {
   const perCounty = rawResults.scopes["CNTY"]["PRSD"];
@@ -79,37 +80,25 @@ function countC(rawResults) {
   return total;
 }
 
-// console.debug("PRDSC is ", countC(sample));
-// console.debug("Total is", calculateTotalVotes(sample));
-// console.debug("Sample is ", sample);
-// console.debug("Keys in cnty are", Object.keys(sample.scopes["CNTY"]["PRSD"]))
+async function main() {
+  const now = new Date().toISOString();
+  const result = await fetchWithPuppeteer(myUrl);
+  fs.writeFileSync(`data/results/${now}.json`, JSON.stringify(result));
+  const countedResult = calculateTotalVotesByCounty(result);
+  console.debug("Counted is", JSON.stringify(countedResult));
+  const currentData = JSON.parse(fs.readFileSync("public/data.json", "utf8"));
+  console.debug("current data is ", currentData);
 
-// fetchWithPuppeteer(myUrl).then((data) => {
-//   console.log(JSON.stringify(data));
-// });
+  const nicusor = countedResult["P2-P"];
+  const simion = countedResult["P1-P"];
 
-// Usage example
-// const targetUrl = 'https://your-protected-url.com';
+  const total = simion.votes + nicusor.votes;
+  currentData.votesX.push(total);
+  currentData.candidates[0].votesY.push((nicusor.votes * 100) / total);
+  currentData.candidates[1].votesY.push((simion.votes * 100) / total);
+  fs.writeFileSync("public/data.json", JSON.stringify(currentData));
+}
 
-// // Method 1: Using custom algorithm
-// fetchProtectedData(targetUrl)
-//   .then(data => {
-//     console.log('Successfully retrieved data:', data);
-//   })
-//   .catch(error => {
-//     console.error('Failed to retrieve data (custom method):', error);
-
-//     // Fall back to puppeteer if the custom method fails
-//     console.log('Trying with puppeteer...');
-//     return fetchWithPuppeteer(targetUrl);
-//   })
-//   .then(data => {
-//     if (data) {
-//       console.log('Successfully retrieved data with puppeteer');
-//     }
-//   })
-//   .catch(error => {
-//     console.error('All methods failed:', error);
-//   });
+main();
 
 module.exports = { fetchWithPuppeteer };
