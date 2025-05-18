@@ -1,5 +1,6 @@
 import "./App.css";
 import {
+  VictoryAxis,
   VictoryChart,
   VictoryLegend,
   VictoryLine,
@@ -146,6 +147,7 @@ const AttendanceChart = ({
           style={{ data: { strokeWidth: 1 } }}
           data={points.map((p, ix) => ({ x: ix, y: p.presence }))}
         />
+        <VictoryAxis tickFormat={() => "pisica"} />
       </VictoryChart>
     </div>
   );
