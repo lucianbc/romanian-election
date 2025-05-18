@@ -180,10 +180,8 @@ function App() {
   const [data, setData] = useState<ElectionChartData | null>(null);
   const [attendance, setAttendance] = useState<object | null>(null);
   useEffect(() => {
-    if (!initialized.current) {
       fetch("/data.json")
         .then((response) => {
-          initialized.current = true;
           return response.json();
         })
         .then((x) => {
@@ -196,7 +194,6 @@ function App() {
         .then((x) => {
           setAttendance(x.presence);
         });
-    }
   }, []);
   return (
     <div className="App">
