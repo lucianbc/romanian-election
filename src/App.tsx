@@ -170,15 +170,15 @@ const AttendanceChart = ({
           //   />
           // }
           style={{
-            tickLabels: { fontSize: 10 },
-            axisLabel: { fontSize: 10, fill: "red" },
+            tickLabels: { fontSize: 7, angle: -45 },
           }}
-
-          // style={{ axisLabel: { fontSize: 2 } }}
         />
         <VictoryAxis
           dependentAxis
           tickValues={points.map((x) => x.presence)}
+          style={{
+            tickLabels: { fontSize: 7, angle: -45 },
+          }}
           fixLabelOverlap
         />
       </VictoryChart>
