@@ -126,6 +126,7 @@ const AttendanceChart = ({
 }: {
   points: { timestamp: string; presence: number }[];
 }) => {
+  const yZoom = new Date(points[points.length - 1].timestamp).getDate();
   return (
     <div
       style={{
@@ -136,12 +137,12 @@ const AttendanceChart = ({
         theme={VictoryTheme.clean}
         containerComponent={
           <VictoryZoomContainer
-            allowZoom={false}
-            allowPan={true}
-            zoomDomain={{
-              x: [0, 100000],
-              y: [0, 50],
-            }}
+          // allowZoom={false}
+          // allowPan={true}
+          // zoomDomain={{
+          //   x: [0, 100000],
+          //   y: [0, yZoom],
+          // }}
           />
         }
       >
