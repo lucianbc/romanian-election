@@ -145,9 +145,17 @@ const AttendanceChart = ({
       >
         <VictoryLine
           style={{ data: { strokeWidth: 1 } }}
-          data={points.map((p, ix) => ({ x: ix, y: p.presence }))}
+          data={points.map((p, ix) => ({
+            x: new Date(p.timestamp),
+            y: p.presence,
+          }))}
         />
-        <VictoryAxis tickFormat={() => "pisica"} />
+        <VictoryAxis
+          tickFormat={
+            // (x) => typeof x
+            (x) => new Date(x).toLocaleTimeString()
+          }
+        />
       </VictoryChart>
     </div>
   );
@@ -179,8 +187,8 @@ function App() {
   return (
     <div className="App">
       <h1>Romanian Presidential Election Result</h1>
-      {data != null && <ElectionChart data={data} />}
       {attendance != null && <AttendanceChart points={attendance as any} />}
+      {data != null && <ElectionChart data={data} />}
     </div>
   );
 }
