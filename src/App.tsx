@@ -120,9 +120,36 @@ const ElectionChart = ({ data }: { data: ElectionChartData }) => {
   );
 };
 
+const AttendanceChart = ({ points }: { points: [number] }) => {
+  console.debug("Got here", points);
+  return (
+    <div
+      style={{
+        width: "70%",
+      }}
+    >
+      <VictoryChart
+        theme={VictoryTheme.clean}
+        domain={{
+          x: [0, 70],
+        }}
+        containerComponent={
+          <VictoryZoomContainer allowZoom={true} allowPan={true} />
+        }
+      >
+        <VictoryLine
+          style={{ data: { strokeWidth: 1 } }}
+          data={points.map((p, ix) => ({ x: ix, y: p }))}
+        />
+      </VictoryChart>
+    </div>
+  );
+};
+
 function App() {
   const initialized = useRef(false);
   const [data, setData] = useState<ElectionChartData | null>(null);
+  const [attendance, setAttendance] = useState<object | null>(null);
   useEffect(() => {
     if (!initialized.current) {
       fetch("/data.json")
@@ -131,8 +158,14 @@ function App() {
           return response.json();
         })
         .then((x) => {
-          console.debug(`my fetched data is`, x);
           setData(x);
+        });
+      fetch("/presence.json")
+        .then((response) => {
+          return response.json();
+        })
+        .then((x) => {
+          setAttendance(x.presence);
         });
     }
   }, []);
@@ -140,6 +173,7 @@ function App() {
     <div className="App">
       <h1>Romanian Presidential Election Result</h1>
       {data != null && <ElectionChart data={data} />}
+      {attendance != null && <AttendanceChart points={attendance as any} />}
     </div>
   );
 }
