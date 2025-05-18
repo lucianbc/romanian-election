@@ -6,5 +6,5 @@ do
   git add .
   git commit -m "Update attendance"
   git push
-  sleep 300  
+  sleep 180  
 done
