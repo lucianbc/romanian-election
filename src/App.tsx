@@ -120,7 +120,11 @@ const ElectionChart = ({ data }: { data: ElectionChartData }) => {
   );
 };
 
-const AttendanceChart = ({ points }: { points: [number] }) => {
+const AttendanceChart = ({
+  points,
+}: {
+  points: { timestamp: string; presence: number }[];
+}) => {
   return (
     <div
       style={{
@@ -140,7 +144,7 @@ const AttendanceChart = ({ points }: { points: [number] }) => {
       >
         <VictoryLine
           style={{ data: { strokeWidth: 1 } }}
-          data={points.map((p, ix) => ({ x: ix, y: p }))}
+          data={points.map((p, ix) => ({ x: ix, y: p.presence }))}
         />
       </VictoryChart>
     </div>
