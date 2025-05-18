@@ -153,24 +153,34 @@ const AttendanceChart = ({
         />
         <VictoryAxis
           tickValues={points.map((x) => new Date(x.timestamp))}
-          tickFormat={(x) =>
+          tickFormat={(x: any) =>
             Intl.DateTimeFormat(undefined, {
               hour: "2-digit",
               minute: "2-digit",
             }).format(x)
           }
           fixLabelOverlap={true}
-          tickLabelComponent={
-            <VictoryLabel
-              angle={-45}
-              dx={-25}
-              dy={-5}
-              renderInPortal
-              style={{ fontSize: 8 }}
-            />
-          }
+          // tickLabelComponent={
+          //   <VictoryLabel
+          //     angle={-45}
+          //     dx={-25}
+          //     dy={-5}
+          //     renderInPortal
+          //     style={{ fontSize: 8 }}
+          //   />
+          // }
+          style={{
+            tickLabels: { fontSize: 10 },
+            axisLabel: { fontSize: 10, fill: "red" },
+          }}
+
+          // style={{ axisLabel: { fontSize: 2 } }}
         />
-        <VictoryAxis dependentAxis tickValues={points.map((x) => x.presence)} />
+        <VictoryAxis
+          dependentAxis
+          tickValues={points.map((x) => x.presence)}
+          fixLabelOverlap
+        />
       </VictoryChart>
     </div>
   );
