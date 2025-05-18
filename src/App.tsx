@@ -159,6 +159,7 @@ const AttendanceChart = ({
               minute: "2-digit",
             }).format(x)
           }
+          fixLabelOverlap={true}
           tickLabelComponent={
             <VictoryLabel
               angle={-45}
