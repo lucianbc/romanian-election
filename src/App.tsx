@@ -151,11 +151,10 @@ const AttendanceChart = ({
           }))}
         />
         <VictoryAxis
-          tickFormat={
-            // (x) => typeof x
-            (x) => new Date(x).toLocaleTimeString()
-          }
+          tickValues={points.map((x) => new Date(x.timestamp))}
+          tickFormat={(x) => new Date(x).toLocaleTimeString()}
         />
+        <VictoryAxis dependentAxis />
       </VictoryChart>
     </div>
   );
