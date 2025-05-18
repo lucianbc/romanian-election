@@ -136,9 +136,12 @@ const AttendanceChart = ({
         theme={VictoryTheme.clean}
         containerComponent={
           <VictoryZoomContainer
-            zoomDomain={{ x: [0, 20] }}
             allowZoom={false}
-            allowPan
+            allowPan={true}
+            zoomDomain={{
+              x: [0, 100000],
+              y: [0, 50],
+            }}
           />
         }
       >
